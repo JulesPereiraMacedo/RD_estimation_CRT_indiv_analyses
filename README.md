@@ -38,3 +38,8 @@ This R file does the analysis for GEE approach, using parallelism, for each meth
 
 "4_%a_Ana_%method_GLMM_Sim1" :
 This R file does the analysis for GEE approach, using parallelism, for each method on G = gaussian, B = binomial, P = poisson. 
+
+## Help
+Users should contact pereiramacedo@univ-tours.fr (Pereira Macedo JA) if they have issues for running the programs.
+## Authors
+Jules Antoine Pereira Macedo: pereiramacedo@univ-tours.fr
