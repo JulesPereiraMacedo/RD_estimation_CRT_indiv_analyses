@@ -10,7 +10,7 @@ In cluster randomized trials (CRTs) with a binary outcome, intervention effects 
 ### Dependencies
 Data generation and analyses were run on a computing center of the Orléans-Tours university with R version 4.0, to parallelize faster but it can be run on a regular computer.
 ### Installing
-To run all the files, we recommand to first install all the packages in the "package.R" file.
+To run all the files, start to run the package.R files to install all the package and to be able to lunch the simulation.
 ### Executing programs
 This simulation study has 810 scenarios.
 
@@ -19,6 +19,10 @@ And has been divided in 2 parts with 405 scenarios each corresponding to this 2 
 "Simulation 1": Non-null treatment effect
 
 "Simulation 2": No treatment effect
+
+Notation: %method: correspond to a method “gauss” or “G” for gaussian, “bin” or “B” for binomial and “poiss” or “P” for poisson.
+
+For each R files take care to change your file path where you want the simulation to be saved. It is named “Base_file =” in the R files (path in line 6 in R file 1_Workspace_Sim1.R, for example).
 
 In "Simulation 1":
 We have 8 files, numeroted from 1 to 4. It needs to be run in the right order (1 → 4). And for the files 3a, 3b, 3c and 4a, 4b, 4c they can be run simultaneously
@@ -38,6 +42,10 @@ This R file does the analysis for GEE approach, using parallelism, for each meth
 
 "4_%a_Ana_%method_GLMM_Sim1" :
 This R file does the analysis for GEE approach, using parallelism, for each method on G = gaussian, B = binomial, P = poisson. 
+
+In "Simulation 2":
+
+For this section is actually the same as the "Simulation 1” section. We just generated data with no treatment effect scenarios. We have to run as the same pattern than for “Simualtion 1”. Lunching the R files from 1 to 4 and the possibility to run the subdivision files a, b and c at the same time.
 
 ## Help
 Users should contact pereiramacedo@univ-tours.fr (Pereira Macedo JA) if they have issues for running the programs.
