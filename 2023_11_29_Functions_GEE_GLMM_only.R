@@ -462,8 +462,8 @@ find_rho <- function(p,q,OR){
   
   ## OR = num / den      ==>    OR * den - num = 0
   ## with:
-  # num = r_m² * num1 + r_m * num2 + num3
-  # den = r_m² * den1 + r_m * den2 + den3
+  # num = r_mÂ² * num1 + r_m * num2 + num3
+  # den = r_mÂ² * den1 + r_m * den2 + den3
   # r_m = rho * coeff_rm
   
   num1 = q**2 - 2*p*(q**2) + (p**2)*(q**2)
@@ -522,8 +522,8 @@ find_r_clus <- function(p,q,OR_clus,icc){
   
   ## OR = num / den      ==>    OR * den - num = 0
   ## with:
-  # num = r_m² * num1 + r_m * num2 + num3
-  # den = r_m² * den1 + r_m * den2 + den3
+  # num = r_mÂ² * num1 + r_m * num2 + num3
+  # den = r_mÂ² * den1 + r_m * den2 + den3
   
   
   num1 = icc*(q**2) - 2*p*(q**2)*icc + (p**2)*(q**2)*icc
@@ -1619,7 +1619,7 @@ fun_cor_gauss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,
   FileName = paste("correction_gauss_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. tu crees le fichier .R qui va contenir les instructions Ã  lancer dans ta 2eme session
   
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Gauss/correction_gauss_S%d",sep = ""),n)
@@ -1710,7 +1710,7 @@ fun_cor_bin <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,Co
   FileName = paste("correction_bin_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. tu crees le fichier .R qui va contenir les instructions Ã  lancer dans ta 2eme session
   
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Bin/correction_bin_S%d",sep = ""),n)
@@ -1801,7 +1801,7 @@ fun_cor_poiss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,
   FileName = paste("correction_poiss_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. tu crees le fichier .R qui va contenir les instructions Ã  lancer dans ta 2eme session
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Poiss/correction_poiss_S%d",sep = ""),n)
   
@@ -2462,5 +2462,6 @@ fun_para_analyse_poiss_glmer <- function(itt_para,n,Scenario_use,Data_file,P_res
   write.table(a,file = paste(P_res_file,paste("/Data_output_Poiss_log_Scenario_",sep = "",n,".csv"),sep = ""),append = TRUE,row.names = FALSE,col.names = FALSE,sep = ";",dec = ",")
 }
 
-
-save.image("C:/Users/pereiramacedo/Desktop/2023_06_23_Article_1_V1/Papier/Code_github/WS_functions.RData")
+# Change the path to save the workspace where you want
+Save_Workspace_path = "C:/Users/pereiramacedo/Desktop/2023_06_23_Article_1_V1/Papier/Code_github/WS_functions.RData"
+save.image(Save_Workspace_path)
