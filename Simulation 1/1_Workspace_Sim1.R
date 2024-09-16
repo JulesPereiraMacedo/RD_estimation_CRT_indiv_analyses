@@ -1697,18 +1697,20 @@ fun_para_analyse_poiss <- function(itt_para,n,matcor_type,Scenario_use,Cor.FG=TR
 
 
 
+
+
 fun_cor_gauss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,Cor.FG = TRUE){
   
-  # 0. Espace de travail
+  # 0. File name
   Chemin = sprintf(paste(Base_file,"/correction/correction_Gauss/correction_gauss_S%d",sep = ""),n)
   dir.create(Chemin)
   setwd(Chemin)
   
-  # 0.1 Nom du fichier principal
+  # 0.1 Name of the principal file
   FileName = paste("correction_gauss_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. Creating R file with the instructions for the second session
   
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Gauss/correction_gauss_S%d",sep = ""),n)
@@ -1721,32 +1723,43 @@ fun_cor_gauss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,
         file  = sprintf(FileName, i),
         append = TRUE)  
   
-  
   write("setwd(Chemin)",
         file  = sprintf(FileName, i),
         append = TRUE)
   
-  # 1.1 tu exporteras l'id de la 2eme session pour le recuperer. Ca servira pour le killer par la suite si besoin est.
+  # 1.1 Export ID job of the second file to kill it if it is necessary (infinite lap of time)
   Exp_id = paste("writeLines(as.character(Sys.getpid()), con = sprintf('%s/pid_%d.txt', getwd(),",i,"))",sep = "")
   write(Exp_id,
         file = sprintf(FileName, i),
         append = TRUE)
   
-  # 1.2 les lignes de commande, pour lancer le programme qui prend du temps
+  # 1.2 Write the second file 
+  ## Care to change the library repository, name file to change for the library command.
+  ## If it is local, no need to input the "lib.loc" in library function
+  
   write(paste("load('",Base_file,"/",Workspace_name,"')",sep = ""), file = sprintf(FileName, i), append = TRUE)
   
-  
-  write("library(doRNG)",file = sprintf(FileName, i), append = TRUE)
-  write("library(doParallel)",file = sprintf(FileName, i), append = TRUE)
-  write("library(dplyr)",file = sprintf(FileName, i), append = TRUE)
-  write("library(gee)",file = sprintf(FileName, i), append = TRUE)
-  write("library(geepack)",file = sprintf(FileName, i), append = TRUE)
-  write("library(spind)",file = sprintf(FileName, i), append = TRUE)
-  write("library(doBy)",file = sprintf(FileName, i), append = TRUE)
-  write("library(arm)",file = sprintf(FileName, i), append = TRUE)
-  write("library(here)",file = sprintf(FileName, i), append = TRUE)
-  write("library(geesmv)",file = sprintf(FileName, i), append = TRUE)
-  write("library(matrixcalc)",file = sprintf(FileName, i), append = TRUE) 
+  write("library(cli, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(Matrix, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(MASS, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(lme4, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(backports, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(dplyr, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(parallel, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(iterators, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(rngtools, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(foreach, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doRNG, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doParallel, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(dplyr, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(gee, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(geepack, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(spind, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doBy, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(arm, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(here, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(geesmv, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(matrixcalc, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)  
   
   L1 = paste("n =",n)
   write(L1,
@@ -1774,32 +1787,35 @@ fun_cor_gauss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,
   
   write("DONE = TRUE",file = sprintf(FileName,i),append = TRUE)
   
-  # 1.3 l'export du resultat
+  # 1.3 Give the information if the iteration did converge or not
   tace_2 = paste("save(DONE, file = sprintf('res_%d.Rdata',",i,"))",sep = "")
   write(tace_2, file = sprintf(FileName, i), append = TRUE)
   
-  # 2. tu fais executer les commandes des fichiers correction_S33_itt_x.R en batch en arriere plan (wait = F)
-  cmd_batch = paste("R CMD BATCH correction_gauss_S",n,"_itt_%d.R",sep = "")
-  system(sprintf(cmd_batch, i), wait = FALSE)
+  # 2. Execute the batch file to lunch the Rscript in the T lap time in background (correction_S33_itt_x.R)
+  cmd_batch = paste("R CMD BATCH --no-restore correction_gauss_S",n,"_itt_%d.R",sep = "")
   
-  # 3. tu verifies si le fichier de sortie est dispo sinon tu killes la deuxieme session
-  Sys.sleep(Time)
-  if (!file.exists(sprintf("res_%d.Rdata", i)))
-    system(sprintf("tskill %d", scan(sprintf("pid_%d.txt", i), integer())))
+  Start.T = Sys.time()
+  system(sprintf(cmd_batch, i), wait = TRUE,timeout = Time)
+  End.T = Sys.time()
+  
+  Diff.time = difftime(End.T,Start.T,units = "sec")
+  if(Diff.time >= Time ){
+    system(sprintf("tskill %d", scan(sprintf("pid_%d.txt", i), integer(),quiet = T)))
+  }
 }
 
 fun_cor_bin <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,Cor.FG=TRUE){
   
-  # 0. Espace de travail
+  # 0. File name
   Chemin = sprintf(paste(Base_file,"/correction/correction_Bin/correction_bin_S%d",sep = ""),n)
   dir.create(Chemin)
   setwd(Chemin)
   
-  # 0.1 Nom du fichier principal
+  # 0.1 Name of the principal file
   FileName = paste("correction_bin_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. Creating R file with the instructions for the second session
   
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Bin/correction_bin_S%d",sep = ""),n)
@@ -1812,32 +1828,43 @@ fun_cor_bin <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,Co
         file  = sprintf(FileName, i),
         append = TRUE)  
   
-  
   write("setwd(Chemin)",
         file  = sprintf(FileName, i),
         append = TRUE)
   
-  # 1.1 tu exporteras l'id de la 2eme session pour le recuperer. Ca servira pour le killer par la suite si besoin est.
+  # 1.1 Export ID job of the second file to kill it if it is necessary (infinite lap of time)
   Exp_id = paste("writeLines(as.character(Sys.getpid()), con = sprintf('%s/pid_%d.txt', getwd(),",i,"))",sep = "")
   write(Exp_id,
         file = sprintf(FileName, i),
         append = TRUE)
   
-  # 1.2 les lignes de commande, pour lancer le programme qui prend du temps
+  # 1.2 Write the second file 
+  ## Care to change the library repository, name file to change for the library command.
+  ## If it is local, no need to input the "lib.loc" in library function
+  
   write(paste("load('",Base_file,"/",Workspace_name,"')",sep = ""), file = sprintf(FileName, i), append = TRUE)
   
-  
-  write("library(doRNG)",file = sprintf(FileName, i), append = TRUE)
-  write("library(doParallel)",file = sprintf(FileName, i), append = TRUE)
-  write("library(dplyr)",file = sprintf(FileName, i), append = TRUE)
-  write("library(gee)",file = sprintf(FileName, i), append = TRUE)
-  write("library(geepack)",file = sprintf(FileName, i), append = TRUE)
-  write("library(spind)",file = sprintf(FileName, i), append = TRUE)
-  write("library(doBy)",file = sprintf(FileName, i), append = TRUE)
-  write("library(arm)",file = sprintf(FileName, i), append = TRUE)
-  write("library(here)",file = sprintf(FileName, i), append = TRUE)
-  write("library(geesmv)",file = sprintf(FileName, i), append = TRUE)
-  write("library(matrixcalc)",file = sprintf(FileName, i), append = TRUE)
+  write("library(cli, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(Matrix, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(MASS, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(lme4, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(backports, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(dplyr, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(parallel, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(iterators, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(rngtools, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(foreach, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doRNG, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doParallel, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(dplyr, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(gee, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(geepack, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(spind, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doBy, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(arm, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(here, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(geesmv, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(matrixcalc, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE) 
   
   L1 = paste("n =",n)
   write(L1,
@@ -1865,32 +1892,35 @@ fun_cor_bin <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,Co
   
   write("DONE = TRUE",file = sprintf(FileName,i),append = TRUE)
   
-  # 1.3 l'export du resultat
+  # 1.3 Give the information if the iteration did converge or not
   tace_2 = paste("save(DONE, file = sprintf('res_%d.Rdata',",i,"))",sep = "")
   write(tace_2, file = sprintf(FileName, i), append = TRUE)
   
-  # 2. tu fais executer les commandes des fichiers correction_S33_itt_x.R en batch en arriere plan (wait = F)
-  cmd_batch = paste("R CMD BATCH correction_bin_S",n,"_itt_%d.R",sep = "")
-  system(sprintf(cmd_batch, i), wait = FALSE)
+  # 2. Execute the batch file to lunch the Rscript in the T lap time in background (correction_S33_itt_x.R)
+  cmd_batch = paste("R CMD BATCH --no-restore correction_bin_S",n,"_itt_%d.R",sep = "")
   
-  # 3. tu verifies si le fichier de sortie est dispo sinon tu killes la deuxieme session
-  Sys.sleep(Time)
-  if (!file.exists(sprintf("res_%d.Rdata", i)))
-    system(sprintf("tskill %d", scan(sprintf("pid_%d.txt", i), integer())))
+  Start.T = Sys.time()
+  system(sprintf(cmd_batch, i), wait = TRUE,timeout = Time)
+  End.T = Sys.time()
+  
+  Diff.time = difftime(End.T,Start.T,units = "sec")
+  if(Diff.time >= Time ){
+    system(sprintf("tskill %d", scan(sprintf("pid_%d.txt", i), integer(),quiet = T)))
+  }
 }
 
 fun_cor_poiss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,Cor.FG = TRUE){
   
-  # 0. Espace de travail
+  # 0. File name
   Chemin = sprintf(paste(Base_file,"/correction/correction_Poiss/correction_poiss_S%d",sep = ""),n)
   dir.create(Chemin)
   setwd(Chemin)
   
-  # 0.1 Nom du fichier principal
+  # 0.1 Name of the principal file
   FileName = paste("correction_poiss_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. Creating R file with the instructions for the second session
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Poiss/correction_poiss_S%d",sep = ""),n)
   
@@ -1902,32 +1932,43 @@ fun_cor_poiss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,
         file  = sprintf(FileName, i),
         append = TRUE)  
   
-  
   write("setwd(Chemin)",
         file  = sprintf(FileName, i),
         append = TRUE)
   
-  # 1.1 tu exporteras l'id de la 2eme session pour le recuperer. Ca servira pour le killer par la suite si besoin est.
+  # 1.1 Export ID job of the second file to kill it if it is necessary (infinite lap of time)
   Exp_id = paste("writeLines(as.character(Sys.getpid()), con = sprintf('%s/pid_%d.txt', getwd(),",i,"))",sep = "")
   write(Exp_id,
         file = sprintf(FileName, i),
         append = TRUE)
   
-  # 1.2 les lignes de commande, pour lancer le programme qui prend du temps
+  # 1.2 Write the second file 
+  ## Care to change the library repository, name file to change for the library command.
+  ## If it is local, no need to input the "lib.loc" in library function
+  
   write(paste("load('",Base_file,"/",Workspace_name,"')",sep = ""), file = sprintf(FileName, i), append = TRUE)
   
-  
-  write("library(doRNG)",file = sprintf(FileName, i), append = TRUE)
-  write("library(doParallel)",file = sprintf(FileName, i), append = TRUE)
-  write("library(dplyr)",file = sprintf(FileName, i), append = TRUE)
-  write("library(gee)",file = sprintf(FileName, i), append = TRUE)
-  write("library(geepack)",file = sprintf(FileName, i), append = TRUE)
-  write("library(spind)",file = sprintf(FileName, i), append = TRUE)
-  write("library(doBy)",file = sprintf(FileName, i), append = TRUE)
-  write("library(arm)",file = sprintf(FileName, i), append = TRUE)
-  write("library(here)",file = sprintf(FileName, i), append = TRUE)
-  write("library(geesmv)",file = sprintf(FileName, i), append = TRUE)
-  write("library(matrixcalc)",file = sprintf(FileName, i), append = TRUE)
+  write("library(cli, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(Matrix, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(MASS, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(lme4, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(backports, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(dplyr, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(parallel, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(iterators, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(rngtools, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(foreach, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doRNG, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doParallel, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(dplyr, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(gee, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(geepack, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(spind, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(doBy, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(arm, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(here, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(geesmv, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE)
+  write("library(matrixcalc, lib.loc='/home/jpereira/z.libs_Pierre/common')",file = sprintf(FileName, i), append = TRUE) 
   
   L1 = paste("n =",n)
   write(L1,
@@ -1956,19 +1997,24 @@ fun_cor_poiss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,
   
   write("DONE = TRUE",file = sprintf(FileName,i),append = TRUE)
   
-  # 1.3 l'export du resultat
+  # 1.3 Give the information if the iteration did converge or not
   tace_2 = paste("save(DONE, file = sprintf('res_%d.Rdata',",i,"))",sep = "")
   write(tace_2, file = sprintf(FileName, i), append = TRUE)
   
-  # 2. tu fais executer les commandes des fichiers correction_S33_itt_x.R en batch en arriere plan (wait = F)
-  cmd_batch = paste("R CMD BATCH correction_poiss_S",n,"_itt_%d.R",sep = "")
-  system(sprintf(cmd_batch, i), wait = FALSE)
+  # 2. Execute the batch file to lunch the Rscript in the T lap time in background (correction_S33_itt_x.R)
+  cmd_batch = paste("R CMD BATCH --no-restore correction_poiss_S",n,"_itt_%d.R",sep = "")
   
-  # 3. tu verifies si le fichier de sortie est dispo sinon tu killes la deuxieme session
-  Sys.sleep(Time)
-  if (!file.exists(sprintf("res_%d.Rdata", i)))
-    system(sprintf("tskill %d", scan(sprintf("pid_%d.txt", i), integer())))
+  
+  Start.T = Sys.time()
+  system(sprintf(cmd_batch, i), wait = TRUE,timeout = Time)
+  End.T = Sys.time()
+  
+  Diff.time = difftime(End.T,Start.T,units = "sec")
+  if(Diff.time >= Time ){
+    system(sprintf("tskill %d", scan(sprintf("pid_%d.txt", i), integer(),quiet = T)))
+  }
 }
+
 
 
 
