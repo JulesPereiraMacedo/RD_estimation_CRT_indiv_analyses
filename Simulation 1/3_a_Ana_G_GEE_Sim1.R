@@ -85,22 +85,22 @@ for (n in Scen) {
 # Parallelism ----
 registerDoParallel(cores = 6)
 
-itt = 12
+itt = 1000
 
 for (n in Scen) {
   
   debut = Sys.time()
-
-  Scenario_use = get(paste("Scenario",n,sep="_")) 
+  
+  Scenario_use = get(paste("Scenario",sep = "_",n))
   
   res <- foreach(i = 1:itt,
                  # .combine = rbind, #unlist
-                 #.errorhandling = "remove", #s'il y a un problème enlève la ligne de
-                 .packages = c("stats","arm","gee","geepack","spind","doBy","doRNG","doParallel","dplyr","here","geesmv","matrixcalc")) %dorng% fun_para_analyse_gauss(itt_para =i,n=n,matcor_type = "exchangeable",Scenario_use = Scenario_use,Data_file = Data_file,G_res_file = G_res_file_gee,Cor.FG=TRUE)
-  
+                 #.errorhandling = "remove", #s'il y a un problÃ¨me enlÃ¨ve la ligne de
+                 .packages = c("stats","arm","gee","geepack","spind","doBy","doRNG","doParallel","dplyr","here","geesmv","matrixcalc")) %dorng% fun_para_analyse_gauss(itt_para = i,n=n,matcor_type="exchangeable",Scenario_use = Scenario_use,Cor.FG=TRUE,Data_file = Data_file,G_res_file = G_res_file )
   
   end = Sys.time()
   time_scen = end-debut
+  print(paste("Time to generated data from Scenario",n,sep = " : "))
   print(time_scen)
   
 }
@@ -109,7 +109,7 @@ for (n in Scen) {
 # Iterations not done after parallelism due to no convergence ----
 
 for (n in Scen) {
-  assign(paste("Data_Gauss_S",n,sep = "_"),read.csv2(paste(G_res_file_gee,"/Data_output_Gauss_id_Scenario_",n,sep = "",".csv")))
+  assign(paste("Data_Gauss_S",n,sep = "_"),read.csv2(paste(G_res_file,"/Data_output_Gauss_id_Scenario_",n,sep = "",".csv")))
   
   
   
@@ -136,7 +136,7 @@ for (n in Scen) {
       
       
       
-      write.table(res_gaussid,file = paste(G_res_file_gee,paste("Data_output_Gauss_id_Scenario_",sep = "",n,".csv"),sep = "/"),append = TRUE,row.names = FALSE,col.names = FALSE,sep = ";",dec = ",")
+      write.table(res_gaussid,file = paste(G_res_file,paste("Data_output_Gauss_id_Scenario_",sep = "",n,".csv"),sep = "/"),append = TRUE,row.names = FALSE,col.names = FALSE,sep = ";",dec = ",")
     }
   }
 }
