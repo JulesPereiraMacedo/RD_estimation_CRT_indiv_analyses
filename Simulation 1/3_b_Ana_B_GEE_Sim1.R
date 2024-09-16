@@ -83,24 +83,24 @@ for (n in Scen) {
 # Parallelism ----
 registerDoParallel(cores = 6)
 
-itt = 12
-pb<-txtProgressBar(0,length(Scen),style=3)
+itt = 1000
 
 for (n in Scen) {
   
   debut = Sys.time()
   
-  Scenario_use = get(paste("Scenario",n,sep="_")) 
   
   res <- foreach(i = 1:itt,
                  # .combine = rbind, #unlist
-                 #.errorhandling = "remove", #s'il y a un problème enlève la ligne de
-                 .packages = c("stats","arm","gee","geepack","spind","doBy","doRNG","doParallel","dplyr","here","geesmv","matrixcalc")) %dorng% fun_cor_bin(i=i,Time = Time,n=n,Base_file = Base_file,Workspace_name = Workspace_name,Data_file = Data_file,Resu_file = Resu_file_gee,Cor.FG=TRUE)  
+                 #.errorhandling = "remove", #s'il y a un problÃ¨me enlÃ¨ve la ligne de
+                 .packages = c("stats","arm","gee","geepack","spind","doBy","doRNG","doParallel","dplyr","here","geesmv","matrixcalc")) %dorng% fun_cor_bin(i=i,Time = Time,n=n,Base_file = Base_file,Workspace_name = Workspace_name,Data_file = Data_file,Resu_file = Resu_file,Cor.FG=Cor.FG)
+  
   
   end = Sys.time()
   time_scen = end-debut
+  print(paste("Time to generated data from Scenario",n,sep = " : "))
   print(time_scen)
-  setTxtProgressBar(pb,n)
+  
 }
 
 
