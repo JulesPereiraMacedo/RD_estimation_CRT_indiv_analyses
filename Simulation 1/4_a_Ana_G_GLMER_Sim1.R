@@ -51,6 +51,7 @@ G_res_file_glmer = paste(Resu_file_glmer,"/Data_Output_gaussid",sep = "")
 
 Scen = rep(1:Nb_scen)
 
+Total_time_d = Sys.time()
 
 # Creation for each scenarii of the Excels ----
 for (n in Scen) {
@@ -141,3 +142,8 @@ for (n in Scen) {
     }
   }
 }
+
+Total_time_e = Sys.time()
+Total_time = Total_time_e - Total_time_d 
+print("Total time for generating Data :")
+print(Total_time)
