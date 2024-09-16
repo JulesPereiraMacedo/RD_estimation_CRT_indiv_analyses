@@ -53,11 +53,10 @@ itt = 1000                  # Number of iteration
 Scen = rep(1:Nb_scen)
 
 Total_time_d = Sys.time()
+set.seed(37250)
 
 for (n in Scen) {
   dir.create(paste(Data_file,"/Scenario_",n,sep=""))
-  
-  set.seed(seed[n])
   
   Scenario_use = get(paste("Scenario",sep = "_",n))
   
@@ -69,7 +68,7 @@ for (n in Scen) {
   
   res <- foreach(i = 1:itt,
                  # .combine = rbind, #unlist
-                 #.errorhandling = "remove", #s'il y a un problème enlève la ligne de
+                 #.errorhandling = "remove", #s'il y a un problÃ¨me enlÃ¨ve la ligne de
                  .packages = c("stats","arm","gee","geepack","spind","doBy","doRNG","doParallel","dplyr","here")) %dorng% fun_para_save_data(itt=1,itt_para  = i,n,Scenario = Scenario_use,Pi_int,Pi_con,rho_z,OR_int,OR_con,Data_itt_File = Data_file)
   
   
