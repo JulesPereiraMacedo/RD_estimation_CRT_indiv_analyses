@@ -1,6 +1,6 @@
 rm(list = ls())
 
-### Base_file is the path where you decide to stock the entire simulation for Sim1 corresponding to the 405 scenarii with non-nnull treatment effect
+### Base_file is the path where you decide to stock the entire simulation for Sim1 corresponding to the 972 scenarii with non-nnull treatment effect
 ### We recommend to have a file where you stock every R files of the Simulation 1 and to use it for the entire Simulation 1
 
 Base_file = "C:/Users/pereiramacedo/Desktop/2023_06_23_Article_1_V1/Papier/Code_github/Simulation 1"
@@ -541,8 +541,8 @@ find_rho <- function(p,q,OR){
   
   ## OR = num / den      ==>    OR * den - num = 0
   ## with:
-  # num = r_m² * num1 + r_m * num2 + num3
-  # den = r_m² * den1 + r_m * den2 + den3
+  # num = r_mÂ² * num1 + r_m * num2 + num3
+  # den = r_mÂ² * den1 + r_m * den2 + den3
   # r_m = rho * coeff_rm
   
   num1 = q**2 - 2*p*(q**2) + (p**2)*(q**2)
@@ -601,8 +601,8 @@ find_r_clus <- function(p,q,OR_clus,icc){
   
   ## OR = num / den      ==>    OR * den - num = 0
   ## with:
-  # num = r_m² * num1 + r_m * num2 + num3
-  # den = r_m² * den1 + r_m * den2 + den3
+  # num = r_mÂ² * num1 + r_m * num2 + num3
+  # den = r_mÂ² * den1 + r_m * den2 + den3
   
   
   num1 = icc*(q**2) - 2*p*(q**2)*icc + (p**2)*(q**2)*icc
@@ -1708,7 +1708,7 @@ fun_cor_gauss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,
   FileName = paste("correction_gauss_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. tu crees le fichier .R qui va contenir les instructions Ã  lancer dans ta 2eme session
   
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Gauss/correction_gauss_S%d",sep = ""),n)
@@ -1799,7 +1799,7 @@ fun_cor_bin <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,Co
   FileName = paste("correction_bin_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. tu crees le fichier .R qui va contenir les instructions Ã  lancer dans ta 2eme session
   
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Bin/correction_bin_S%d",sep = ""),n)
@@ -1890,7 +1890,7 @@ fun_cor_poiss <- function(i,Time,n,Base_file,Workspace_name,Data_file,Resu_file,
   FileName = paste("correction_poiss_S",n,"_itt_%d.R",sep = "")
   
   
-  # 1. tu crees le fichier .R qui va contenir les instructions à lancer dans ta 2eme session
+  # 1. tu crees le fichier .R qui va contenir les instructions Ã  lancer dans ta 2eme session
   
   Stock_file = sprintf(paste(Base_file,"/correction/correction_Poiss/correction_poiss_S%d",sep = ""),n)
   
@@ -2561,13 +2561,6 @@ fun_para_analyse_poiss_glmer <- function(itt_para,n,Scenario_use,Data_file,P_res
 # Creating the scenarios for the Non-null treatment effect ----
 
 
-# We set a seed to generate 405 seed for each scenario
-# Because of the convergence problem of the gee function we had to simulated each scenario independently
-# And problem could happen at every time for a scenario so, we chose to have a seed for each scenario
-# so if the program stop a one point we could restart the program starting from the scenario whom crashed
-# It does not crashed a second time if we start from this scenario, we have no explanation to this phenomenon
-set.seed(37250)
-
 Pi_int = 0.7                # Prevalence of inclusion in the intervention arm when we add confounding
 Pi_con = 0.7                # Prevalence of inclusion in the control arm when we add confounding
 rho_z = 0.3                 # Inclusion ICC
@@ -2590,11 +2583,11 @@ for (i in 1:Nb_prev_paire) {
 }
 Paire_prevalance = Mat_prev
 
-icc_para = c(0.05,0.01,0.001)
+icc_para = c(0.001,0.01,0.05,0.2)
 
 Nb_icc = length(icc_para)
 
-k_para = c(5,10,40)
+k_para = c(5,10,20,30,40)
 
 Nb_k = length(k_para)
 
@@ -2609,6 +2602,7 @@ Nb_cov_clus = length(cov_clus_para)
 list_OR = list(c(2.5,1.5,1))
 
 
+Nb_scen = 0
 num = 1
 for (a in 1:Nb_prev_paire) {
   for (b in 1:Nb_icc) {
@@ -2619,6 +2613,14 @@ for (a in 1:Nb_prev_paire) {
       }
       if(k_para[c]==10){
         m_para = c(15,200)
+        Nb_m = length(m_para)
+      }
+      if(k_para[c]==20){
+        m_para = c(10,150)
+        Nb_m = length(m_para)
+      }
+      if(k_para[c]==30){
+        m_para = c(10,150)
         Nb_m = length(m_para)
       }
       if(k_para[c]==40){
@@ -2648,6 +2650,7 @@ for (a in 1:Nb_prev_paire) {
               if(icc == 0.05 || icc == 0.01){OR_cov_clus = c(1.2,1)}else{OR_cov_clus = c(1.1,1)}
             }
             
+            # OR_cov_clus=as.vector(unlist(list_OR_clus))
             
             assign(paste("Scenario",num,sep = "_"),list(pI,
                                                         pC,
@@ -2661,6 +2664,7 @@ for (a in 1:Nb_prev_paire) {
                                                         OR_cov,
                                                         OR_cov_clus))
             num = num+1
+            Nb_scen = Nb_scen + 1
           }
         }
       }
@@ -2669,13 +2673,8 @@ for (a in 1:Nb_prev_paire) {
 }
 
 
-Nb_scen = num - 1
-
-# Generated a vector 'seed' to have a seed for each Scenario
-
-seed = sample(1:10000,Nb_scen)
-
-
+# Nb_scen = rep(1:(Nb_prev_paire*Nb_m*Nb_icc*Nb_k*Nb_cov*Nb_corr_vec))
+Nb_scen
 
 
 
